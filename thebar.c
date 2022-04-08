@@ -18,28 +18,36 @@
 void printBanner();
 void init();
 void cleanup();
-typedef struct threadArgs {
-	int customer;
-}threadArgs;
 
 /**
  * Main function
  */
 int main(int argc, char **argv)
 {
-	if(atoi(argv[1]) > 0 && atoi(argv[1]) < 3){}
+	if(atoi(argv[1]) > 0 && atoi(argv[1]) < 3){
+
+	
 	printBanner();
 	init(); // initialize semaphores
 	//fire off customer thread
-	numThreads = atoi(argv[1]);
-	pthread_t tid[numThreads];
-	threadARgs args[numThreads];
+	int numThreads = atoi(argv[1]);
+	//For customers
+	pthread_t threadsForCust[numThreads];
+	for(int i=0; i<numThreads;i++){
+		pthread_create(&threadsForCust[i], NULL, customer, (void *)&i);
+	}
+
+	//for bartneder 
+	pthread_t barThread;
+	pthread_create(&barThread, NULL, bartender, NULL);
 
 
-	// TODO - fire off bartender thread
-
-	// TODO - wait for all threads to finish
-
+	//wait for all threads to finish
+	for(int i=0; i<num_threads;i++){ 
+		pthread_join(threadsForCust[i], NULL);
+	}
+	// joining bartender thread
+	pthread_join(barThread, NULL); 
 	cleanup(); // cleanup and destroy semaphores
 	}else if(atoi(argv[1]) < 0){
 		printf("Negative Customers Not Possible! Please try again!!\n");
@@ -99,14 +107,14 @@ void init()
 void cleanup()
 {
 	//close semaphores
-	sem_close("/custToBar");
-	sem_close("/custArrAtBar");
-	sem_close("/custOrdering");
-	sem_close("/custBrowsing");
-	sem_close("/payForDrink");
-	sem_close("/custLeavesBar");
+	sem_close(custToBar);
+	sem_close(custArrAtBar);
+	sem_close(custOrdering);
+	sem_close(custBrowsing);
+	sem_close(payForDrink);
+	sem_close(custLeavesBar);
 
-	sem_close("/paymentSucessful");
-	sem_close("/makingDrinks");
-	sem_close("/bartenderWaitsInCloset");
+	sem_close(paymentSucessful);
+	sem_close(makingDrinks);
+	sem_close(bartenderWaitsInCloset);
 }

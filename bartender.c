@@ -47,7 +47,7 @@ void waitForCustomer()
  */
 void makeDrink()
 {
-	sem_wait(custOrder);
+	sem_wait(custOrdering);
 	int randTime = (rand() % (1000 - 5 + 1)) + 5;
 	usleep(randTime);
 	printf("\t\t\t\t\t\t\t\t\t\t\t| \t\tBartender\n");

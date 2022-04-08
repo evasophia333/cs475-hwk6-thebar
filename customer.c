@@ -63,7 +63,7 @@ void custArriveAtBar(unsigned int custID)
  */
 void custPlaceOrder()
 {
-	sem_post(custOrder); //sem3
+	sem_post(custOrdering); //sem3
 	sem_post(custBrowsing); //sem4
 	printf("\t\t\t\tCust %u\t\t\t\t\t\t\t|\n", now_serving);
 }
