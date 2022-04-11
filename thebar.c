@@ -32,14 +32,16 @@ int main(int argc, char **argv)
 	//fire off customer thread
 	int numThreads = atoi(argv[1]);
 	//For customers
-	pthread_t threadsForCust[numThreads];
+	pthread_t *threadsForCust = (pthread_t *)malloc(sizeof(pthread_t));
+
 	for(int i=0; i<numThreads;i++){
+
 		pthread_create(&threadsForCust[i], NULL, customer, (void *)&i);
 	}
 
 	//for bartneder 
-	pthread_t barThread;
-	pthread_create(&barThread, NULL, bartender, NULL);
+	pthread_t *barThread = (pthread_t *)malloc(num_threads * sizeof(pthread_t));
+	pthread_create(barThread, NULL, bartender, NULL);
 
 
 	//wait for all threads to finish
@@ -48,6 +50,8 @@ int main(int argc, char **argv)
 	}
 	// joining bartender thread
 	pthread_join(barThread, NULL); 
+	free(barThread);
+	free(threadsForCust);
 	cleanup(); // cleanup and destroy semaphores
 	}else if(atoi(argv[1]) < 0){
 		printf("Negative Customers Not Possible! Please try again!!\n");
@@ -117,4 +121,16 @@ void cleanup()
 	sem_close(paymentSucessful);
 	sem_close(makingDrinks);
 	sem_close(bartenderWaitsInCloset);
+
+	//unlink them too 
+	sem_unlink("/custToBar");
+	sem_unlink("/custArrAtBar");
+	sem_unlink("/custOrdering");
+	sem_unlink("/custBrowsing");
+	sem_unlink("/payForDrink");
+	sem_unlink("/custLeavesBar");
+
+	sem_unlink("/paymentSucessful");
+	sem_unlink("/makingDrinks");
+	sem_unlink("/bartenderWaitsInCloset");
 }
